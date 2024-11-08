@@ -45,13 +45,16 @@ Follow these steps to set up and run the OrgScanner app locally:
     cd ../backend
     npm install
 
-2. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
+3. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
    ```bash
     GITHUB_TOKEN= your_github_token
     MONGO_URI= mongodb://db:27017/org-scanner
     PORT=5000
 
-
 4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
    ```bash
     docker-compose up --build
+
+5. **Access the application:** 
+    - Nagigate to `http://localhost:3000` to get access to the frontend applcation.
+    - To interact directly with the backend, go to `http://localhost:5000/swagger` to get access to the swagger documenation for the endpoints created.
