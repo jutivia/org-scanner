@@ -8,8 +8,10 @@ export default function OrgComponent() {
  
   const {
     allRepos,
-    repos,
+    orgId,
+    hasNextPage,
     isLoading,
+    isFetching,
     containerRef,
     error,
     clearInput,
@@ -25,9 +27,10 @@ export default function OrgComponent() {
       ? <p className="text-red-500 text-center">{handleError(error)}</p> 
       : <RepoList containerRef={containerRef}
           repos={allRepos}
-          orgId={repos?.data.orgId || ""}
+          orgId={orgId ?? ""}
           isLoading={isLoading}
-          hasNextPage={repos?.data.hasNextPage ?? true}
+          isFetching={isFetching}
+          hasNextPage={hasNextPage ?? true}
         />}
     </div>
   )

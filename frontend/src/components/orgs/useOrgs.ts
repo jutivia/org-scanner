@@ -1,4 +1,4 @@
-import { useGetRepos } from "@/src/api/get-repos"
+import { useGetRepos } from "../../api/get-repos"
 import { Repository } from "@/src/lib/type"
 import axios, { AxiosError } from "axios"
 import { useEffect, useRef, useState } from "react"
@@ -7,7 +7,7 @@ export const useOrgs = () => {
     const [org, setOrg] = useState('')
     const [allRepos, setAllRepos] = useState<Repository[] | []>([])
     const [cursor, setCursor] = useState<string | undefined>(undefined)
-    const { data: repos, isLoading, error } = useGetRepos(org, { pageSize: 10, cursor })
+    const { data: repos, isLoading, error, isFetching } = useGetRepos(org, { pageSize: 10, cursor })
 
     const containerRef = useRef<HTMLDivElement>(null)
     const hasMoreRepos = repos?.data.hasNextPage ?? false
@@ -61,9 +61,11 @@ export const useOrgs = () => {
     }
 
     return {
+        orgId: repos?.data.orgId,
+        hasNextPage: repos?.data.hasNextPage,
         allRepos,
-        repos,
         isLoading,
+        isFetching,
         containerRef,
         error,
         clearInput,

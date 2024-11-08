@@ -10,7 +10,7 @@
 
 ### Backend
 
-The backend was implemented using **NestJS** and **MongoDB**. I leveraged the github's **GraphQL** endpoint instead of the REST endpoints for fetching GitHub’s repositories, and I gained several advantages:
+The backend was implemented using **NestJS** and **MongoDB**. I leveraged the github's **GraphQL** endpoint instead of it's REST endpoints for fetching GitHub’s repositories, and I gained a couple advantages:
 - **Efficient Data Fetching**: The GraphQL endpoint allowed me to request exactly the fields I needed, reducing response size and improving performance.
 - **Single Query Multiple Resources**: With the GraphQL endpoint, I could fetch repositories and branches data in a single request, reducing the need for multiple api calls.
 

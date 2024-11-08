@@ -9,9 +9,10 @@ interface RepoListProps {
   isLoading: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
   hasNextPage?: boolean;
+  isFetching: boolean;
 }
 
-export function RepoList({ repos, isLoading, orgId, containerRef, hasNextPage }: RepoListProps) {
+export function RepoList({ repos, isLoading, orgId, containerRef, hasNextPage, isFetching }: RepoListProps) {
   const { handleCheckboxChange } = useRepoList(orgId);
 
   return (
@@ -26,7 +27,12 @@ export function RepoList({ repos, isLoading, orgId, containerRef, hasNextPage }:
       {repos.length > 0 && (
         <div className="space-y-4">
           {repos.map((repo) => (
-            <RepoRow repo={repo} handleCheckboxChange={handleCheckboxChange} />
+            <RepoRow
+              key={repo.id}
+              repo={repo}
+              handleCheckboxChange={handleCheckboxChange}
+              isFetching={isFetching}
+            />
           ))}
           <div>
             {hasNextPage ? (isLoading && <RepoLoader />) : <p className='flex items-center justify-center w-full'>No more repositories to load.</p>}

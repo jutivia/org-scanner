@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Repository } from '../../lib/type';
 import { Button } from '../ui/button';
@@ -9,7 +8,8 @@ import { useRepoRow } from './use-repo-row';
 
 interface IRepoRowProps {
     handleCheckboxChange: (id: string, checkedStatus: any) => void
-    repo: Repository
+    repo: Repository;
+    isFetching: boolean;
 }
 
 const RepoRow = ({ repo, handleCheckboxChange }: IRepoRowProps) => {
@@ -24,7 +24,7 @@ const RepoRow = ({ repo, handleCheckboxChange }: IRepoRowProps) => {
         <CardContent className="p-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                    <Checkbox
+                  <Checkbox
                         id={`checkbox-${repo.name}`}
                         checked={selected}
                         onCheckedChange={handleCheck}
@@ -36,7 +36,7 @@ const RepoRow = ({ repo, handleCheckboxChange }: IRepoRowProps) => {
                     View Repo
                 </a>
             </div>
-            <p className="text-sm text-gray-500 mt-1 flex gap-2 items-center flex-wrap">Language: {repo.language.map(x => <Badge variant={'secondary'}> {x} </Badge>)}</p>
+            <div className="text-sm text-gray-500 mt-1 flex gap-2 items-center flex-wrap"><p>Language:</p> {repo.language.map(x => <Badge variant={'secondary'} key={x}> {x} </Badge>)}</div>
             <Button
                 variant="ghost"
                 className="mt-2 p-0 px-2"
@@ -47,7 +47,7 @@ const RepoRow = ({ repo, handleCheckboxChange }: IRepoRowProps) => {
                 ) : (
                     <ChevronRightIcon className="mr-1" />
                 )}
-                {expandedRepo === repo.name ? 'Hide' : 'Show'} Top {repo.branchCount > 10 ? `10 of ${repo.branchCount}` : repo.branchCount} Branches
+                {expandedRepo === repo.name ? 'Hide' : 'Show'} First {repo.branchCount > 10 ? `10 of ${repo.branchCount}` : repo.branchCount} Branches
             </Button>
             {expandedRepo === repo.name && (
                 <ul className="mt-2 ml-6 space-y-1 list-disc">

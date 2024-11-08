@@ -10,7 +10,7 @@ import {
   mockHttpResponse,
   mockServiceResponse,
   mockSelectionResponse,
-} from './data';
+} from './mock-data';
 
 describe('OrganizationService', () => {
   let service: OrganizationService;
