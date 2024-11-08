@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { OrganizationService } from './org.service';
 import { PaginationQueryDto } from './dto/query-dto';
 import { SelectRepositoryDto } from './dto/select-repository.dto';
-import { successResponse } from 'src/utils/helpers';
+import { successResponse } from '../utils/helpers';
 import {
   FormatedRepository,
   OrgPaginationResponse,
