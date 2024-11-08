@@ -55,10 +55,10 @@ Follow these steps to set up and run the OrgScanner app locally:
     - For the backend, `cd` into the backend folder and run `npm run test`
     - For the frontend, `cd` into the frontend folder and run `npm run test`
 
-4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
+5. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
    ```bash
     docker-compose up --build
 
-5. **Access the application:** 
+6. **Access the application:** 
     - Nagigate to `http://localhost:3000` to get access to the frontend applcation.
     - To interact directly with the backend, go to `http://localhost:5000/swagger` to get access to the swagger documenation for the endpoints created.
