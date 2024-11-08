@@ -1,46 +1,57 @@
-# Getting Started with Create React App
+# OrgScanner App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+**OrgScanner** is an application designed to fetch and display repositories and branch data from GitHub organizations in a structured, efficient way. With a clean and intuitive frontend and a simple backend, OrgScanner provides seamless access to GitHub data, making it easy to monitor organizational repositories and branches.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Implementation Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Backend
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The backend was implemented using **NestJS** and **MongoDB**. I leveraged the github's **GraphQL** endpoint instead of the REST endpoints for fetching GitHub’s repositories, and I gained several advantages:
+- **Efficient Data Fetching**: The GraphQL endpoint allowed me to request exactly the fields I needed, reducing response size and improving performance.
+- **Single Query Multiple Resources**: With the GraphQL endpoint, I could fetch repositories and branches data in a single request, reducing the need for multiple api calls.
 
-### `npm test`
+#### Technologies Used
+- **NestJS** for backend API and application logic.
+- **MongoDB** for data storage, allowing efficient query and persistence for when repository is checked.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
 
-### `npm run build`
+The frontend was built using **React** and **TailwindCSS** for styling, with **ShadCN** for component styling and structure. This setup enabled the creation of a visually appealing UI to display organization repositories and branches clearly.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Technologies Used
+- **React** for building the user interface.
+- **TailwindCSS** for rapid, utility-first styling.
+- **ShadCN** to provide consistent, styled components.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Running the Application
 
-### `npm run eject`
+Follow these steps to set up and run the OrgScanner app locally:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd orgScanner
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Install Dependencies:** Navigate to each of the frontend and backend directories and install the dependencies:
+   ```bash
+   cd frontend
+    npm install
+    cd ../backend
+    npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
+   ```bash
+      GITHUB_TOKEN= your_github_token
+      MONGO_URI= mongodb://db:27017/org-scanner
+      PORT=5000
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
+   ```bash
+   docker-compose up --build
