@@ -35,23 +35,23 @@ Follow these steps to set up and run the OrgScanner app locally:
 
 1. **Clone the Repository**
    ```bash
-   git clone <repository-url>
-   cd orgScanner
+    git clone <repository-url>
+    cd orgScanner
 
 2. **Install Dependencies:** Navigate to each of the frontend and backend directories and install the dependencies:
    ```bash
-   cd frontend
+    cd frontend
     npm install
     cd ../backend
     npm install
 
 2. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
    ```bash
-      GITHUB_TOKEN= your_github_token
-      MONGO_URI= mongodb://db:27017/org-scanner
-      PORT=5000
+    GITHUB_TOKEN= your_github_token
+    MONGO_URI= mongodb://db:27017/org-scanner
+    PORT=5000
 
 
 4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
    ```bash
-   docker-compose up --build
+    docker-compose up --build
