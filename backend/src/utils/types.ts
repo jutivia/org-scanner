@@ -103,14 +103,17 @@ export type OrgGraphQlResponse = {
   };
 };
 
-export type FormatedRepository = {
+export type FormatedRepository = UnformattedRepsoitory & {
+  selected: boolean;
+};
+
+export type UnformattedRepsoitory = {
   name: string;
   url: string;
   language: string[];
   branchCount: number;
   branches: string[];
   id: string;
-  selected: boolean;
 };
 
 export class SuccessResponseDto<T> {

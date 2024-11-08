@@ -1,4 +1,4 @@
-import { useSelectRepo } from "@/src/api/select-repo"
+import { useSelectRepo } from "../../api/select-repo"
 
 export const useRepoList = (orgId: string) => {
     const { mutateAsync: selectRepo } = useSelectRepo()

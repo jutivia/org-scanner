@@ -6,7 +6,7 @@ import {
   OrgGraphQlResponse,
   FormatedRepository,
   OrgPaginationResponse,
-  GithubOrgResponse,
+  UnformattedRepsoitory,
 } from 'src/utils/types';
 import { lastValueFrom } from 'rxjs';
 import { OrganizationRepository } from './org.repository';
@@ -71,7 +71,7 @@ export class OrganizationService {
       after: query.cursor,
     };
 
-    this.logger.log('Fetching response from github');
+    this.logger.log(`Fetching response from github for org ${org} `);
 
     const response: OrgGraphQlResponse = await lastValueFrom(
       this.httpService.post(
@@ -84,7 +84,7 @@ export class OrganizationService {
     );
 
     if (response.data.errors?.length) {
-      this.logger.log('Throwing error from github response');
+      this.logger.log(`Throwing error from github response for org ${org}`);
       this.logger.error(response.data.errors);
       throw new BadRequestException(
         `Unable to fetch repositories under ${org}`,
@@ -94,13 +94,39 @@ export class OrganizationService {
     const repositoriesPageInfo =
       response.data.data.organization.repositories.pageInfo;
 
-    this.logger.log('Formatting response from github');
-    const updatedRepositories = await this.formattingGithubResponse(
-      response.data.data.organization,
+    this.logger.log(`Formatting response from github for org ${org}`);
+
+    const repositories = response.data.data.organization.repositories.nodes.map(
+      (repo) => ({
+        name: repo.name,
+        url: repo.url,
+        language: repo.languages.nodes.map((x: { name: string }) => x.name),
+        branchCount: repo.refs.totalCount,
+        branches: repo.refs.nodes.map((x: { name: string }) => x.name),
+        id: repo.id,
+      }),
+    );
+
+    const repoIds = repositories.map((repo) => repo.id);
+    const orgId = response.data.data.organization.id;
+
+    this.logger.log(
+      `Checking for existing selected repos from db for repository ids:`,
+      repoIds,
+    );
+
+    const selectedRepoMap = await this.fetchRepositorySelection(repoIds, orgId);
+
+    this.logger.log(
+      'Assigning existing selected state to corresponding repositories',
+    );
+    const updatedRepositories = this.formattingGithubResponse(
+      selectedRepoMap,
+      repositories,
     );
 
     return {
-      orgId: response.data.data.organization.id,
+      orgId: orgId,
       list: updatedRepositories,
       size: query.pageSize,
       hasNextPage: repositoriesPageInfo.hasNextPage,
@@ -108,36 +134,22 @@ export class OrganizationService {
     };
   }
 
-  private async formattingGithubResponse(
-    data: GithubOrgResponse,
-  ): Promise<FormatedRepository[]> {
-    const repositories = data.repositories.nodes.map((repo) => ({
-      name: repo.name,
-      url: repo.url,
-      language: repo.languages.nodes.map((x: { name: string }) => x.name),
-      branchCount: repo.refs.totalCount,
-      branches: repo.refs.nodes.map((x: { name: string }) => x.name),
-      id: repo.id,
-    }));
-
-    const repoIds = repositories.map((repo) => repo.id);
-
-    this.logger.log('Checking for existing selected repos from db');
+  private async fetchRepositorySelection(repoIds: string[], orgId: string) {
     const existingRepos = await this.orgRepository.find({
       repositoryId: { $in: repoIds },
-      organizationId: data.id,
+      organizationId: orgId,
       selected: true,
     });
-
-    this.logger.log(
-      'Assigning existing selected state from to corresponding repositories',
-    );
-    const selectedRepoMap = existingRepos.reduce((map, repo) => {
+    return existingRepos.reduce((map, repo) => {
       map[repo.repositoryId] = repo.selected;
       return map;
     }, {});
+  }
 
-    this.logger.log('Returning formatted repositories');
+  private formattingGithubResponse(
+    selectedRepoMap: Record<string, boolean>,
+    repositories: UnformattedRepsoitory[],
+  ): FormatedRepository[] {
     return repositories.map((repo) => ({
       ...repo,
       selected: selectedRepoMap[repo.id] ?? false,
