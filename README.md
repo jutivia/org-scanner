@@ -51,6 +51,10 @@ Follow these steps to set up and run the OrgScanner app locally:
     MONGO_URI= mongodb://db:27017/org-scanner
     PORT=5000
 
+4. **To run Tests:** 
+    - For the backend, `cd` into the backend folder and run `npm run test`
+    - For the frontend, `cd` into the frontend folder and run `npm run test`
+
 4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
    ```bash
     docker-compose up --build

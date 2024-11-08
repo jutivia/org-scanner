@@ -63,6 +63,34 @@ export type GithubResponse<T> = {
   data: T[];
 };
 
+export type GithubOrgResponse = {
+  id: string;
+  repositories: {
+    nodes: [
+      {
+        id: string;
+        name: string;
+        url: string;
+        languages: {
+          nodes: { name: string }[];
+        };
+        refs: {
+          nodes: { name: string }[];
+          totalCount: number;
+          pageInfo: {
+            endCursor: string;
+            hasNextPage: boolean;
+          };
+        };
+      },
+    ];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+  };
+};
+
 export type OrgGraphQlResponse = {
   data: {
     errors?: {
@@ -70,33 +98,7 @@ export type OrgGraphQlResponse = {
       message: string;
     }[];
     data: {
-      organization: {
-        id: string;
-        repositories: {
-          nodes: [
-            {
-              id: string;
-              name: string;
-              url: string;
-              languages: {
-                nodes: { name: string }[];
-              };
-              refs: {
-                nodes: { name: string }[];
-                totalCount: number;
-                pageInfo: {
-                  endCursor: string;
-                  hasNextPage: boolean;
-                };
-              };
-            },
-          ];
-          pageInfo: {
-            endCursor: string;
-            hasNextPage: boolean;
-          };
-        };
-      };
+      organization: GithubOrgResponse;
     };
   };
 };

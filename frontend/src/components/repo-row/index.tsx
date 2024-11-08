@@ -1,28 +1,24 @@
 import * as React from 'react';
-import { Card, CardContent } from './ui/card';
-import { Repository } from '../lib/type';
-import { Button } from './ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Repository } from '../../lib/type';
+import { Button } from '../ui/button';
 import { ChevronDownIcon, ChevronRightIcon, ExternalLinkIcon } from '@radix-ui/react-icons'
-import { Checkbox } from './ui/checkbox';
-import { Badge } from './ui/badge';
+import { Checkbox } from '../ui/checkbox';
+import { Badge } from '../ui/badge';
+import { useRepoRow } from './use-repo-row';
 
 interface IRepoRowProps {
     handleCheckboxChange: (id: string, checkedStatus: any) => void
     repo: Repository
 }
 
-const RepoRow = ({repo, handleCheckboxChange}: IRepoRowProps) => {
-    const [expandedRepo, setExpandedRepo] = React.useState<string | null>(null)
-    const [selected, setSelected] = React.useState(false)
-
-    const handleCheck =(checked: boolean) => {
-        setSelected(checked); 
-        handleCheckboxChange(repo.id, checked)
-    }
-
-    React.useEffect(()=>{
-        setSelected(repo.selected)
-    },[repo.selected])
+const RepoRow = ({ repo, handleCheckboxChange }: IRepoRowProps) => {
+    const {
+        expandedRepo,
+        selected,
+        setExpandedRepo,
+        handleCheck
+    } = useRepoRow(handleCheckboxChange, repo)
 
     return <Card>
         <CardContent className="p-4">
@@ -40,7 +36,7 @@ const RepoRow = ({repo, handleCheckboxChange}: IRepoRowProps) => {
                     View Repo
                 </a>
             </div>
-            <p className="text-sm text-gray-500 mt-1 flex gap-2 items-center flex-wrap">Language: {repo.language.map(x=> <Badge variant={'secondary'}> {x} </Badge>)}</p>
+            <p className="text-sm text-gray-500 mt-1 flex gap-2 items-center flex-wrap">Language: {repo.language.map(x => <Badge variant={'secondary'}> {x} </Badge>)}</p>
             <Button
                 variant="ghost"
                 className="mt-2 p-0 px-2"
@@ -51,7 +47,7 @@ const RepoRow = ({repo, handleCheckboxChange}: IRepoRowProps) => {
                 ) : (
                     <ChevronRightIcon className="mr-1" />
                 )}
-                {expandedRepo === repo.name ? 'Hide' : 'Show'} Top {repo.branchCount> 10? `10 of ${repo.branchCount}`: repo.branchCount} Branches
+                {expandedRepo === repo.name ? 'Hide' : 'Show'} Top {repo.branchCount > 10 ? `10 of ${repo.branchCount}` : repo.branchCount} Branches
             </Button>
             {expandedRepo === repo.name && (
                 <ul className="mt-2 ml-6 space-y-1 list-disc">

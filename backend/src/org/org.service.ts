@@ -6,6 +6,7 @@ import {
   OrgGraphQlResponse,
   FormatedRepository,
   OrgPaginationResponse,
+  GithubOrgResponse,
 } from 'src/utils/types';
 import { lastValueFrom } from 'rxjs';
 import { OrganizationRepository } from './org.repository';
@@ -70,6 +71,8 @@ export class OrganizationService {
       after: query.cursor,
     };
 
+    this.logger.log('Fetching response from github');
+
     const response: OrgGraphQlResponse = await lastValueFrom(
       this.httpService.post(
         this.githubGraphqlUrl,
@@ -79,43 +82,22 @@ export class OrganizationService {
         },
       ),
     );
+
     if (response.data.errors?.length) {
+      this.logger.log('Throwing error from github response');
       this.logger.error(response.data.errors);
       throw new BadRequestException(
         `Unable to fetch repositories under ${org}`,
       );
     }
 
-    const repositories = response.data.data.organization.repositories.nodes.map(
-      (repo) => ({
-        name: repo.name,
-        url: repo.url,
-        language: repo.languages.nodes.map((x: { name: string }) => x.name),
-        branchCount: repo.refs.totalCount,
-        branches: repo.refs.nodes.map((x: { name: string }) => x.name),
-        id: repo.id,
-      }),
-    );
-
     const repositoriesPageInfo =
       response.data.data.organization.repositories.pageInfo;
 
-    const repoIds = repositories.map((repo) => repo.id);
-    const existingRepos = await this.orgRepository.find({
-      repositoryId: { $in: repoIds },
-      organizationId: response.data.data.organization.id,
-      selected: true,
-    });
-
-    const selectedRepoMap = existingRepos.reduce((map, repo) => {
-      map[repo.repositoryId] = repo.selected;
-      return map;
-    }, {});
-
-    const updatedRepositories = repositories.map((repo) => ({
-      ...repo,
-      selected: selectedRepoMap[repo.id] ?? false,
-    }));
+    this.logger.log('Formatting response from github');
+    const updatedRepositories = await this.formattingGithubResponse(
+      response.data.data.organization,
+    );
 
     return {
       orgId: response.data.data.organization.id,
@@ -126,24 +108,58 @@ export class OrganizationService {
     };
   }
 
+  private async formattingGithubResponse(
+    data: GithubOrgResponse,
+  ): Promise<FormatedRepository[]> {
+    const repositories = data.repositories.nodes.map((repo) => ({
+      name: repo.name,
+      url: repo.url,
+      language: repo.languages.nodes.map((x: { name: string }) => x.name),
+      branchCount: repo.refs.totalCount,
+      branches: repo.refs.nodes.map((x: { name: string }) => x.name),
+      id: repo.id,
+    }));
+
+    const repoIds = repositories.map((repo) => repo.id);
+
+    this.logger.log('Checking for existing selected repos from db');
+    const existingRepos = await this.orgRepository.find({
+      repositoryId: { $in: repoIds },
+      organizationId: data.id,
+      selected: true,
+    });
+
+    this.logger.log(
+      'Assigning existing selected state from to corresponding repositories',
+    );
+    const selectedRepoMap = existingRepos.reduce((map, repo) => {
+      map[repo.repositoryId] = repo.selected;
+      return map;
+    }, {});
+
+    this.logger.log('Returning formatted repositories');
+    return repositories.map((repo) => ({
+      ...repo,
+      selected: selectedRepoMap[repo.id] ?? false,
+    }));
+  }
+
   async saveRepoSelection(
     organizationId: string,
     { repositoryId, selection }: SelectRepositoryDto,
   ): Promise<OrgRepository> {
-    try {
-      return await this.orgRepository.findOneAndUpdate(
-        {
-          organizationId,
-          repositoryId,
-        },
-        { selected: selection },
-      );
-    } catch (error) {
-      return await this.orgRepository.create({
+    this.logger.log('Updating repsoitory selection state in db');
+    return await this.orgRepository.findOneAndUpdate(
+      {
         organizationId,
         repositoryId,
-        selected: selection,
-      });
-    }
+      },
+      { selected: selection },
+      {
+        new: true,
+        upsert: true,
+        lean: false,
+      },
+    );
   }
 }

@@ -18,6 +18,7 @@ export const useGetRepos = (
   return useQuery({
     queryKey: ["repositories", name, query],
     queryFn: () => getRepos(name, query),
-    enabled: !!name
+    enabled: !!name,
+    retry: false
   });
 };
