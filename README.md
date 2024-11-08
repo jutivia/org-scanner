@@ -35,7 +35,7 @@ Follow these steps to set up and run the OrgScanner app locally:
 
 1. **Clone the Repository**
    ```bash
-    git clone <repository-url>
+    git clone https://github.com/jutivia/org-scanner.git
     cd orgScanner
 
 2. **Install Dependencies:** Navigate to each of the frontend and backend directories and install the dependencies:
