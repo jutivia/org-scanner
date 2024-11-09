@@ -38,26 +38,19 @@ Follow these steps to set up and run the OrgScanner app locally:
     git clone https://github.com/jutivia/org-scanner.git
     cd orgScanner
 
-2. **Install Dependencies:** Navigate to each of the frontend and backend directories and install the dependencies:
-   ```bash
-    cd frontend
-    npm install
-    cd ../backend
-    npm install
-
-3. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
+2. **Add environment variables:** In the root directory, create an .env file and include values for the following variables:
    ```bash
     GITHUB_TOKEN= your_github_token
     MONGO_URI= mongodb://db:27017/org-scanner
     PORT=5000
 
-4. **To run Tests:** 
-    - For the backend, `cd` into the backend folder and run `npm run test`
+3. **To run Tests:** 
+    - For the backend, run `docker-compose run backend-tests`
 
-5. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
+4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
    ```bash
-    docker-compose up --build
+    docker-compose up --build frontend backend db
 
-6. **Access the application:** 
+5. **Access the application:** 
     - Nagigate to `http://localhost:3000` to get access to the frontend applcation.
     - To interact directly with the backend, go to `http://localhost:5000/swagger` to get access to the swagger documenation for the endpoints created.

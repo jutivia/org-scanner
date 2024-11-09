@@ -35,5 +35,16 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  backend-tests:
+    build:
+      context: ./backend
+    command: ["npm", "run", "test"]
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
 volumes:
   mongo-data:
