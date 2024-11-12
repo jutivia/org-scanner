@@ -47,7 +47,7 @@ Follow these steps to set up and run the OrgScanner app locally:
 3. **To run Tests:** 
     - For the backend, run `docker-compose run backend-tests`
 
-4. **Start the Application:** Once dependencies are installed, navigate back to the root directory and start the application using Docker:
+4. **Start the Application:** Start the application using Docker:
    ```bash
     docker-compose up --build frontend backend db
 
